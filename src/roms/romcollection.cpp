@@ -237,7 +237,7 @@ int RomCollection::cachedRoms(bool imageUpdated, bool onStartup)
         bool onV1 = false;
         QDir cacheDir(getCacheLocation());
 
-        if (!cacheDir.exists() && settings.value("Other/downloadinfo", "").toString() == "true")
+        if (!cacheDir.exists() && SETTINGS.value("Other/downloadinfo", "").toString() == "true")
             onV1 = true;
 
         if (onV1)
@@ -330,9 +330,9 @@ void RomCollection::initializeRom(Rom *currentRom, bool cached)
 {
     QSettings *romCatalog = new QSettings(parent);
 
-    QString catalogFile = settings.value("Paths/catalog", "").toString();
+    QString catalogFile = SETTINGS.value("Paths/catalog", "").toString();
     if (catalogFile == "") {
-        QString dataPath = settings.value("Paths/data", "").toString();
+        QString dataPath = SETTINGS.value("Paths/data", "").toString();
         QDir dataDir(dataPath);
 
         if (QFileInfo(dataDir.absoluteFilePath("mupen64plus.ini")).exists())
@@ -378,7 +378,7 @@ void RomCollection::initializeRom(Rom *currentRom, bool cached)
         currentRom->rumble = romCatalog->value(newMD5+"/Rumble","").toString();
     }
 
-    if (!cached && settings.value("Other/downloadinfo", "").toString() == "true") {
+    if (!cached && SETTINGS.value("Other/downloadinfo", "").toString() == "true") {
         if (currentRom->goodName != getTranslation("Unknown ROM") &&
             currentRom->goodName != getTranslation("Requires catalog file")) {
             scraper->downloadGameInfo(currentRom->romMD5, currentRom->goodName);
@@ -392,7 +392,7 @@ void RomCollection::initializeRom(Rom *currentRom, bool cached)
 
     }
 
-    if (settings.value("Other/downloadinfo", "").toString() == "true") {
+    if (SETTINGS.value("Other/downloadinfo", "").toString() == "true") {
         QString dataFile = getCacheLocation() + currentRom->romMD5.toLower() + "/data.json";
         QFile file(dataFile);
 

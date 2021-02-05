@@ -43,12 +43,9 @@
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
-    QTranslator translator;
 
-    QSettings::setPath(QSettings::NativeFormat, QSettings::UserScope, "."); // set to the Current working directory
-    QSettings settings(ParentNameLower, AppNameLower);
-    
-    QString language = settings.value("language", getDefaultLanguage()).toString();
+    QTranslator translator;
+    QString language = SETTINGS.value("language", getDefaultLanguage()).toString();
 
     if (language != "EN") {
         QString resource = ":/locale/"+AppNameLower+"_"+language.toLower()+".qm";
@@ -64,9 +61,9 @@ int main(int argc, char *argv[])
     MainWindow window;
 
 
-    QString maximized = settings.value("Geometry/maximized", "").toString();
-    QString windowx = settings.value("Geometry/windowx", "").toString();
-    QString windowy = settings.value("Geometry/windowy", "").toString();
+    QString maximized = SETTINGS.value("Geometry/maximized", "").toString();
+    QString windowx = SETTINGS.value("Geometry/windowx", "").toString();
+    QString windowy = SETTINGS.value("Geometry/windowy", "").toString();
 
     if (maximized == "true") {
         window.showMaximized();

@@ -204,9 +204,9 @@ void TheGamesDBScraper::downloadGameInfo(QString identifier, QString searchName,
             QString apiFilter = "&filter[platform]=3&include=boxart&fields=game_title,release_date,";
             apiFilter += "developers,publishers,genres,overview,rating,players";
 
-            QString apiURL = settings.value("TheGamesDB/url", "https://api.thegamesdb.net/").toString();
-            QString gameIDPrefix = settings.value("TheGamesDB/ByGameID", "/v1/Games/ByGameID").toString();
-            QString gameNamePrefix = settings.value("TheGamesDB/ByGameName", "/v1.1/Games/ByGameName").toString();
+            QString apiURL = SETTINGS.value("TheGamesDB/url", "https://api.thegamesdb.net/").toString();
+            QString gameIDPrefix = SETTINGS.value("TheGamesDB/ByGameID", "/v1/Games/ByGameID").toString();
+            QString gameNamePrefix = SETTINGS.value("TheGamesDB/ByGameName", "/v1.1/Games/ByGameName").toString();
 
             //If user submits gameID, use that
             if (gameID != "")
@@ -387,7 +387,7 @@ QByteArray TheGamesDBScraper::getUrlContents(QUrl url)
     connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
     connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
 
-    int time = settings.value("Other/networktimeout", 10).toInt();
+    int time = SETTINGS.value("Other/networktimeout", 10).toInt();
     if (time == 0) time = 10;
     time *= 1000;
 
@@ -430,15 +430,15 @@ void TheGamesDBScraper::updateListCache(QFile *file, QString list)
     if (keepGoing) {
         QUrl url;
 
-        QString apiURL = settings.value("TheGamesDB/url", "https://api.thegamesdb.net/").toString();
+        QString apiURL = SETTINGS.value("TheGamesDB/url", "https://api.thegamesdb.net/").toString();
         QString prefix;
 
         if (list == "Genres")
-            prefix = settings.value("TheGamesDB/Genres", "/v1/Genres").toString();
+            prefix = SETTINGS.value("TheGamesDB/Genres", "/v1/Genres").toString();
         else if (list == "Developers")
-            prefix = settings.value("TheGamesDB/Developers", "/v1/Developers").toString();
+            prefix = SETTINGS.value("TheGamesDB/Developers", "/v1/Developers").toString();
         else if (list == "Publishers")
-            prefix = settings.value("TheGamesDB/Publishers", "/v1/Publishers").toString();
+            prefix = SETTINGS.value("TheGamesDB/Publishers", "/v1/Publishers").toString();
 
         url.setUrl(apiURL + prefix + "?apikey=" + TheGamesDBAPIKey);
         QString data = getUrlContents(url);

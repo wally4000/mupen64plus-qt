@@ -75,16 +75,16 @@ void ListView::addToListView(Rom *currentRom, int count, bool ddEnabled)
     if (ddEnabled) // Add place for "No Cart" entry
         count++;
 
-    QStringList visible = settings.value("List/columns", "Filename|Internal Name|Size").toString().split("|");
+    QStringList visible = SETTINGS.value("List/columns", "Filename|Internal Name|Size").toString().split("|");
 
-    if (visible.join("") == "" && settings.value("List/displaycover", "") != "true")
+    if (visible.join("") == "" && SETTINGS.value("List/displaycover", "") != "true")
         //Otherwise no columns, so don't bother populating
         return;
 
     ClickableWidget *gameListItem = new ClickableWidget(listWidget);
     gameListItem->setContentsMargins(0, 0, 20, 0);
     gameListItem->setContextMenuPolicy(Qt::CustomContextMenu);
-    if (settings.value("List/theme","Light").toString() == "Dark")
+    if (SETTINGS.value("List/theme","Light").toString() == "Dark")
         gameListItem->setStyleSheet("color:#EEE;");
 
     //Assign ROM data to widget for use in click events
@@ -102,7 +102,7 @@ void ListView::addToListView(Rom *currentRom, int count, bool ddEnabled)
     gameListLayout->setColumnStretch(3, 1);
 
     //Add image
-    if (settings.value("List/displaycover", "") == "true") {
+    if (SETTINGS.value("List/displaycover", "") == "true") {
         QLabel *listImageLabel = new QLabel(gameListItem);
         listImageLabel->setMinimumHeight(getImageSize("List").height());
         listImageLabel->setMinimumWidth(getImageSize("List").width());
@@ -136,7 +136,7 @@ void ListView::addToListView(Rom *currentRom, int count, bool ddEnabled)
     {
         QString addition = "";
 
-        if (i == 0 && settings.value("List/firstitemheader","true") == "true")
+        if (i == 0 && SETTINGS.value("List/firstitemheader","true") == "true")
             addition += "<h2 style='line-height:120%;margin:0;padding:0;'>";
         else
             addition += "<div style='line-height:120%;margin:0;padding:0;'><b>"
@@ -144,7 +144,7 @@ void ListView::addToListView(Rom *currentRom, int count, bool ddEnabled)
 
         addition += getRomInfo(current, currentRom, true);
 
-        if (i == 0 && settings.value("List/firstitemheader","true") == "true")
+        if (i == 0 && SETTINGS.value("List/firstitemheader","true") == "true")
             addition += "</h2>";
         else
             addition += "</div>";
@@ -175,7 +175,7 @@ void ListView::addToListView(Rom *currentRom, int count, bool ddEnabled)
         separator->setFrameShape(QFrame::HLine);
         separator->setStyleSheet("margin:0;padding:0;");
         QPalette palette = separator->palette();
-        if (settings.value("List/theme","Light").toString() == "Dark")
+        if (SETTINGS.value("List/theme","Light").toString() == "Dark")
             palette.setColor(QPalette::Window, Qt::black);
         else
             palette.setColor(QPalette::Window, Qt::gray);
@@ -309,7 +309,7 @@ void ListView::selectNextRom(QWidget* current, QString keypress)
 
 void ListView::setListBackground()
 {
-    if (settings.value("List/theme","Light").toString() == "Dark")
+    if (SETTINGS.value("List/theme","Light").toString() == "Dark")
         setStyleSheet("#listView { border: none; background: #222; } #listWidget { background: transparent; }");
     else
         setStyleSheet("#listView { border: none; background: #FFF; } #listWidget { background: transparent; }");
