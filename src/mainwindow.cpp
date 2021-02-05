@@ -147,7 +147,8 @@ void MainWindow::autoloadSettings()
 
         emulatorCheck << "/usr/bin/mupen64plus"
                      << "/usr/games/mupen64plus"
-                     << "/usr/local/bin/mupen64plus";
+                     << "/usr/local/bin/mupen64plus"
+                     << "./mupen64plus";
 
         pluginCheck  << "/usr/lib/mupen64plus"
                      << "/usr/lib64/mupen64plus"
@@ -155,11 +156,13 @@ void MainWindow::autoloadSettings()
                      << "/usr/lib/i386-linux-gnu/mupen64plus"
                      << "/usr/lib/mupen64plus/mupen64plus"
                      << "/usr/lib64/mupen64plus/mupen64plus/"
-                     << "/usr/local/lib/mupen64plus";
+                     << "/usr/local/lib/mupen64plus"
+                     << "./plugins";
 
         dataCheck    << "/usr/share/mupen64plus"
                      << "/usr/share/games/mupen64plus"
-                     << "/usr/local/share/mupen64plus";
+                     << "/usr/local/share/mupen64plus"
+                     << "./";
 
 
         foreach (QString check, emulatorCheck)
@@ -224,6 +227,8 @@ void MainWindow::checkConfigLocation()
 
         if (QFileInfo(configCheck+"/mupen64plus.cfg").exists())
             SETTINGS.setValue("Paths/config", configCheck);
+        else 
+            SETTINGS.setValue("Paths/config", ".")
     }
 }
 
