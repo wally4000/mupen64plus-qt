@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     emulation = new EmulatorHandler(this);
     romCollection = new RomCollection(QStringList() << "*.z64" << "*.v64" << "*.n64" << "*.zip",
-                                      QStringList() << SETTINGS.value("Paths/roms","").toString().split("|"),
+                                      QStringList() << settings.value("Paths/roms","").toString().split("|"),
                                       this);
     createMenu();
     createRomView();
@@ -97,12 +97,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     mainWidget = new QWidget(this);
     setCentralWidget(mainWidget);
-    setGeometry(QRect(SETTINGS.value("Geometry/windowx", 0).toInt(),
-                      SETTINGS.value("Geometry/windowy", 0).toInt(),
-                      SETTINGS.value("Geometry/width", 900).toInt(),
-                      SETTINGS.value("Geometry/height", 600).toInt()));
+    setGeometry(QRect(settings.value("Geometry/windowx", 0).toInt(),
+                      settings.value("Geometry/windowy", 0).toInt(),
+                      settings.value("Geometry/width", 900).toInt(),
+                      settings.value("Geometry/height", 600).toInt()));
 
-    if (SETTINGS.value("View/fullscreen", "").toString() == "true")
+    if (settings.value("View/fullscreen", "").toString() == "true")
         updateFullScreenMode();
 
     mainLayout = new QVBoxLayout(mainWidget);
@@ -123,7 +123,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void MainWindow::addToView(Rom *currentRom, int count)
 {
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     if (visibleLayout == "table")
         tableView->addToTableView(currentRom);
@@ -136,9 +136,9 @@ void MainWindow::addToView(Rom *currentRom, int count)
 
 void MainWindow::autoloadSettings()
 {
-    QString emulatorPath = SETTINGS.value("Paths/mupen64plus", "").toString();
-    QString dataPath = SETTINGS.value("Paths/data", "").toString();
-    QString pluginPath = SETTINGS.value("Paths/plugins", "").toString();
+    QString emulatorPath = settings.value("Paths/mupen64plus", "").toString();
+    QString dataPath = settings.value("Paths/data", "").toString();
+    QString pluginPath = settings.value("Paths/plugins", "").toString();
 
     if (emulatorPath == "" && dataPath == "" && pluginPath == "") {
 #ifdef OS_LINUX_OR_BSD
@@ -167,15 +167,15 @@ void MainWindow::autoloadSettings()
 
         foreach (QString check, emulatorCheck)
             if (QFileInfo(check).exists())
-                SETTINGS.setValue("Paths/mupen64plus", check);
+                settings.setValue("Paths/mupen64plus", check);
 
         foreach (QString check, pluginCheck)
-            if (QFileInfo(check+"/mupen64plus-video-rice.so").exists())
-                SETTINGS.setValue("Paths/plugins", check);
+           if (QFileInfo(check+"/mupen64plus-video-glide64.so").exists())
+                settings.setValue("Paths/plugins", check);
 
         foreach (QString check, dataCheck)
             if (QFileInfo(check+"/mupen64plus.ini").exists())
-                SETTINGS.setValue("Paths/data", check);
+                settings.setValue("Paths/data", check);
 #endif
 
 #ifdef Q_OS_WIN
@@ -183,15 +183,15 @@ void MainWindow::autoloadSettings()
         QString currentDir = QCoreApplication::applicationDirPath();
 
         if (QFileInfo(currentDir+"/mupen64plus-ui-console.exe").exists())
-            SETTINGS.setValue("Paths/mupen64plus", currentDir+"/mupen64plus-ui-console.exe");
+            settings.setValue("Paths/mupen64plus", currentDir+"/mupen64plus-ui-console.exe");
         else if (QFileInfo(currentDir+"/mupen64plus.exe").exists())
-            SETTINGS.setValue("Paths/mupen64plus", currentDir+"/mupen64plus.exe");
+            settings.setValue("Paths/mupen64plus", currentDir+"/mupen64plus.exe");
 
         if (QFileInfo(currentDir+"/mupen64plus-video-rice.dll").exists())
-            SETTINGS.setValue("Paths/plugins", currentDir);
+            settings.setValue("Paths/plugins", currentDir);
 
         if (QFileInfo(currentDir+"/mupen64plus.ini").exists())
-            SETTINGS.setValue("Paths/data", currentDir);
+            settings.setValue("Paths/data", currentDir);
 #endif
 
 #ifdef Q_OS_OSX
@@ -200,9 +200,9 @@ void MainWindow::autoloadSettings()
 
         QString mupen64App = currentDir+"/mupen64plus.app/Contents";
         if (QFileInfo(mupen64App+"/MacOS/mupen64plus").exists()) {
-            SETTINGS.setValue("Paths/mupen64plus", mupen64App+"/MacOS/mupen64plus");
-            SETTINGS.setValue("Paths/plugins", mupen64App+"/MacOS");
-            SETTINGS.setValue("Paths/data", mupen64App+"/Resources");
+            settings.setValue("Paths/mupen64plus", mupen64App+"/MacOS/mupen64plus");
+            settings.setValue("Paths/plugins", mupen64App+"/MacOS");
+            settings.setValue("Paths/data", mupen64App+"/Resources");
         }
 #endif
     }
@@ -214,7 +214,7 @@ void MainWindow::autoloadSettings()
 void MainWindow::checkConfigLocation()
 {
     //Check default location for mupen64plus.cfg in case user wants to use editor
-    QString configPath = SETTINGS.value("Paths/config", "").toString();
+    QString configPath = settings.value("Paths/config", "").toString();
 
     if (configPath == "") {
         QString homeDir = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first();
@@ -226,23 +226,23 @@ void MainWindow::checkConfigLocation()
 #endif
 
         if (QFileInfo(configCheck+"/mupen64plus.cfg").exists())
-            SETTINGS.setValue("Paths/config", configCheck);
+            settings.setValue("Paths/config", configCheck);
         else 
-            SETTINGS.setValue("Paths/config", ".")
+            settings.setValue("Paths/config", ".");
     }
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    SETTINGS.setValue("Geometry/windowx", geometry().x());
-    SETTINGS.setValue("Geometry/windowy", geometry().y());
-    SETTINGS.setValue("Geometry/width", geometry().width());
-    SETTINGS.setValue("Geometry/height", geometry().height());
+    settings.setValue("Geometry/windowx", geometry().x());
+    settings.setValue("Geometry/windowy", geometry().y());
+    settings.setValue("Geometry/width", geometry().width());
+    settings.setValue("Geometry/height", geometry().height());
     if (isMaximized())
-        SETTINGS.setValue("Geometry/maximized", true);
+        settings.setValue("Geometry/maximized", true);
     else
-        SETTINGS.setValue("Geometry/maximized", "");
+        settings.setValue("Geometry/maximized", "");
 
     tableView->saveColumnWidths();
 
@@ -334,7 +334,7 @@ void MainWindow::createMenu()
             << (QStringList() << tr("Grid View")  << "grid")
             << (QStringList() << tr("List View")  << "list");
 
-    QString layoutValue = SETTINGS.value("View/layout", "none").toString();
+    QString layoutValue = settings.value("View/layout", "none").toString();
 
     foreach (QStringList layoutName, layouts)
     {
@@ -365,7 +365,7 @@ void MainWindow::createMenu()
 
     fullScreenAction->setCheckable(true);
 
-    if (SETTINGS.value("View/fullscreen", "") == "true")
+    if (settings.value("View/fullscreen", "") == "true")
         fullScreenAction->setChecked(true);
 
     menuBar->addMenu(viewMenu);
@@ -483,7 +483,7 @@ void MainWindow::disableButtons()
 
 void MainWindow::disableViews(bool imageUpdated)
 {
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     //Save position in current layout
     if (visibleLayout == "table")
@@ -513,10 +513,10 @@ void MainWindow::enableButtons()
 
 void MainWindow::enableViews(int romCount, bool cached)
 {
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     if (romCount != 0) { //else no ROMs, so leave views disabled
-        QStringList tableVisible = SETTINGS.value("Table/columns", "Filename|Size").toString().split("|");
+        QStringList tableVisible = settings.value("Table/columns", "Filename|Size").toString().split("|");
 
         if (tableVisible.join("") != "")
             tableView->setEnabled(true);
@@ -594,12 +594,12 @@ bool MainWindow::eventFilter(QObject*, QEvent *event)
             QWindowStateChangeEvent *windowEvent = static_cast<QWindowStateChangeEvent*>(event);
 
             if (windowEvent->oldState() == Qt::WindowNoState) {
-                SETTINGS.setValue("View/fullscreen", true);
+                settings.setValue("View/fullscreen", true);
                 tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
                 gridView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
                 listView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
             } else {
-                SETTINGS.setValue("View/fullscreen", "");
+                settings.setValue("View/fullscreen", "");
                 tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
                 gridView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
                 listView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -613,7 +613,7 @@ bool MainWindow::eventFilter(QObject*, QEvent *event)
 
 QString MainWindow::getCurrentRomInfoFromView(QString infoName)
 {
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     if (visibleLayout == "table")
         return tableView->getCurrentRomInfo(infoName);
@@ -711,7 +711,7 @@ void MainWindow::openEditor()
 {
     checkConfigLocation();
 
-    QString configPath = SETTINGS.value("Paths/config", "").toString();
+    QString configPath = settings.value("Paths/config", "").toString();
     QDir configDir = QDir(configPath);
     QString configFile = configDir.absoluteFilePath("mupen64plus.cfg");
     QFile config(configFile);
@@ -757,25 +757,25 @@ void MainWindow::openMupenDocs()
 
 void MainWindow::openSettings()
 {
-    QString tableImageBefore = SETTINGS.value("Table/imagesize", "Medium").toString();
-    QString columnsBefore = SETTINGS.value("Table/columns", "Filename|Size").toString();
-    QString downloadBefore = SETTINGS.value("Other/downloadinfo", "").toString();
+    QString tableImageBefore = settings.value("Table/imagesize", "Medium").toString();
+    QString columnsBefore = settings.value("Table/columns", "Filename|Size").toString();
+    QString downloadBefore = settings.value("Other/downloadinfo", "").toString();
 
     SettingsDialog settingsDialog(this, 0);
     settingsDialog.exec();
 
-    QString tableImageAfter = SETTINGS.value("Table/imagesize", "Medium").toString();
-    QString columnsAfter = SETTINGS.value("Table/columns", "Filename|Size").toString();
-    QString downloadAfter = SETTINGS.value("Other/downloadinfo", "").toString();
+    QString tableImageAfter = settings.value("Table/imagesize", "Medium").toString();
+    QString columnsAfter = settings.value("Table/columns", "Filename|Size").toString();
+    QString downloadAfter = settings.value("Other/downloadinfo", "").toString();
 
     //Reset columns widths if user has selected different columns to display
     if (columnsBefore != columnsAfter) {
-        SETTINGS.setValue("Table/width", "");
+        settings.setValue("Table/width", "");
         tableView->setColumnCount(3);
         tableView->setHeaderLabels(QStringList(""));
     }
 
-    QStringList romSave = SETTINGS.value("Paths/roms","").toString().split("|");
+    QStringList romSave = settings.value("Paths/roms","").toString().split("|");
     if (romCollection->romPaths != romSave) {
         romCollection->updatePaths(romSave);
         romCollection->addRoms();
@@ -880,7 +880,7 @@ void MainWindow::resetLayouts(bool imageUpdated)
 
 void MainWindow::showActiveView()
 {
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     if (visibleLayout == "table")
         tableView->setHidden(false);
@@ -912,7 +912,7 @@ void MainWindow::showRomMenu(const QPoint &pos)
     connect(contextStartAction, SIGNAL(triggered()), this, SLOT(launchRomFromMenu()));
     connect(contextConfigureGameAction, SIGNAL(triggered()), this, SLOT(openGameSettings()));
 
-    if (SETTINGS.value("Other/downloadinfo", "").toString() == "true") {
+    if (settings.value("Other/downloadinfo", "").toString() == "true") {
         contextMenu->addSeparator();
         QAction *contextDownloadAction = contextMenu->addAction(tr("&Download/Update Info..."));
         QAction *contextDeleteAction = contextMenu->addAction(tr("D&elete Current Info..."));
@@ -923,7 +923,7 @@ void MainWindow::showRomMenu(const QPoint &pos)
 
 
     QWidget *activeWidget = new QWidget(this);
-    QString visibleLayout = SETTINGS.value("View/layout", "none").toString();
+    QString visibleLayout = settings.value("View/layout", "none").toString();
 
     if (visibleLayout == "table")
         activeWidget = tableView->viewport();
@@ -962,7 +962,7 @@ void MainWindow::toggleMenus(bool active)
             next->setEnabled(false);
     }
 
-    if (SETTINGS.value("Other/downloadinfo", "").toString() == "") {
+    if (settings.value("Other/downloadinfo", "").toString() == "") {
         downloadAction->setEnabled(false);
         deleteAction->setEnabled(false);
     }
@@ -973,7 +973,7 @@ void MainWindow::updateFullScreenMode()
 {
     if (isFullScreen()) {
         fullScreenAction->setChecked(false);
-        SETTINGS.setValue("View/fullscreen", "");
+        settings.setValue("View/fullscreen", "");
 
         menuBar->setHidden(false);
         tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -982,7 +982,7 @@ void MainWindow::updateFullScreenMode()
         showNormal();
     } else {
         fullScreenAction->setChecked(true);
-        SETTINGS.setValue("View/fullscreen", true);
+        settings.setValue("View/fullscreen", true);
 
         menuBar->setHidden(true);
         tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -996,7 +996,7 @@ void MainWindow::updateFullScreenMode()
 void MainWindow::updateLayoutSetting()
 {
     QString visibleLayout = layoutGroup->checkedAction()->data().toString();
-    SETTINGS.setValue("View/layout", visibleLayout);
+    settings.setValue("View/layout", visibleLayout);
 
     emptyView->setHidden(true);
     tableView->setHidden(true);

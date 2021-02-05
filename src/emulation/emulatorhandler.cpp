@@ -155,32 +155,32 @@ void EmulatorHandler::startEmulator(QDir romDir, QString romFileName, QString zi
     } else
         completeRomPath = romDir.absoluteFilePath(romFileName);
 
-    QString emulatorPath = SETTINGS.value("Paths/mupen64plus", "").toString();
-    QString dataPath = SETTINGS.value("Paths/data", "").toString();
-    QString configPath = SETTINGS.value("Paths/config", "").toString();
-    QString pluginPath = SETTINGS.value("Paths/plugins", "").toString();
+    QString emulatorPath = settings.value("Paths/mupen64plus", "").toString();
+    QString dataPath = settings.value("Paths/data", "").toString();
+    QString configPath = settings.value("Paths/config", "").toString();
+    QString pluginPath = settings.value("Paths/plugins", "").toString();
     QDir dataDir(dataPath);
     QDir configDir(configPath);
     QDir pluginDir(pluginPath);
 
-    QString emuMode = SETTINGS.value("Emulation/mode", "").toString();
+    QString emuMode = settings.value("Emulation/mode", "").toString();
 
-    QString resolution = SETTINGS.value("Graphics/resolution", "").toString();
+    QString resolution = settings.value("Graphics/resolution", "").toString();
 
-    QString videoPlugin = SETTINGS.value("Plugins/video", "").toString();
-    QString audioPlugin = SETTINGS.value("Plugins/audio", "").toString();
-    QString inputPlugin = SETTINGS.value("Plugins/input", "").toString();
-    QString rspPlugin = SETTINGS.value("Plugins/rsp", "").toString();
+    QString videoPlugin = settings.value("Plugins/video", "").toString();
+    QString audioPlugin = settings.value("Plugins/audio", "").toString();
+    QString inputPlugin = settings.value("Plugins/input", "").toString();
+    QString rspPlugin = settings.value("Plugins/rsp", "").toString();
 
     QFile emulatorFile(emulatorPath);
     QFile romFile(completeRomPath);
 
-    QString gameVideoPlugin = SETTINGS.value(romFileName+"/video", "").toString();
-    QString gameAudioPlugin = SETTINGS.value(romFileName+"/audio", "").toString();
-    QString gameInputPlugin = SETTINGS.value(romFileName+"/input", "").toString();
-    QString gameRSPPlugin = SETTINGS.value(romFileName+"/rsp", "").toString();
+    QString gameVideoPlugin = settings.value(romFileName+"/video", "").toString();
+    QString gameAudioPlugin = settings.value(romFileName+"/audio", "").toString();
+    QString gameInputPlugin = settings.value(romFileName+"/input", "").toString();
+    QString gameRSPPlugin = settings.value(romFileName+"/rsp", "").toString();
 
-    QString gameConfigPath = SETTINGS.value(romFileName+"/config", "").toString();
+    QString gameConfigPath = settings.value(romFileName+"/config", "").toString();
     QDir gameConfigDir(gameConfigPath);
 
 
@@ -211,7 +211,7 @@ void EmulatorHandler::startEmulator(QDir romDir, QString romFileName, QString zi
 
     QStringList args;
 
-    if (SETTINGS.value("saveoptions", "").toString() != "true")
+    if (settings.value("saveoptions", "").toString() != "true")
         args << "--nosaveoptions";
 
     if (dataPath != "" && dataDir.exists())
@@ -226,12 +226,12 @@ void EmulatorHandler::startEmulator(QDir romDir, QString romFileName, QString zi
     if (emuMode != "")
         args << "--emumode" << emuMode;
 
-    if (SETTINGS.value("Graphics/osd", "").toString() == "true")
+    if (settings.value("Graphics/osd", "").toString() == "true")
         args << "--osd";
     else
         args << "--noosd";
 
-    if (SETTINGS.value("Graphics/fullscreen", "").toString() == "true")
+    if (settings.value("Graphics/fullscreen", "").toString() == "true")
         args << "--fullscreen";
     else
         args << "--windowed";
@@ -256,11 +256,11 @@ void EmulatorHandler::startEmulator(QDir romDir, QString romFileName, QString zi
     else if (rspPlugin != "")
         args << "--rsp" << rspPlugin;
 
-    QString otherParameters = SETTINGS.value("Other/parameters", "").toString();
+    QString otherParameters = settings.value("Other/parameters", "").toString();
     if (otherParameters != "")
         args.append(parseArgString(otherParameters));
 
-    QString gameParameters = SETTINGS.value(romFileName+"/parameters").toString();
+    QString gameParameters = settings.value(romFileName+"/parameters").toString();
     if (gameParameters != "")
         args.append(parseArgString(gameParameters));
 
@@ -277,7 +277,7 @@ void EmulatorHandler::startEmulator(QDir romDir, QString romFileName, QString zi
 
     // GLideN64 workaround. Can be removed if workaround is no longer needed
     // See: https://github.com/gonetz/GLideN64/issues/454#issuecomment-126853972
-    if (SETTINGS.value("Other/forcegl33", "").toString() == "true") {
+    if (settings.value("Other/forcegl33", "").toString() == "true") {
         QProcessEnvironment emulatorEnv = QProcessEnvironment::systemEnvironment();
         emulatorEnv.insert("MESA_GL_VERSION_OVERRIDE", "3.3COMPAT");
         emulatorProc->setProcessEnvironment(emulatorEnv);

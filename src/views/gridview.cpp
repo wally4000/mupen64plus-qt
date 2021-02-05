@@ -130,14 +130,14 @@ void GridView::addToGridView(Rom *currentRom, int count, bool ddEnabled)
     gridImageLabel->setAlignment(Qt::AlignCenter);
     gameGridLayout->addWidget(gridImageLabel, 1, 1);
 
-    if (SETTINGS.value("Grid/label","true") == "true") {
+    if (settings.value("Grid/label","true") == "true") {
         QLabel *gridTextLabel = new QLabel(gameGridItem);
 
         //Don't allow label to be wider than image
         gridTextLabel->setMaximumWidth(getImageSize("Grid").width());
 
         QString text = "";
-        QString labelText = SETTINGS.value("Grid/labeltext","Filename").toString();
+        QString labelText = settings.value("Grid/labeltext","Filename").toString();
 
         text = getRomInfo(labelText, currentRom);
 
@@ -146,7 +146,7 @@ void GridView::addToGridView(Rom *currentRom, int count, bool ddEnabled)
 
         gridTextLabel->setText(text);
 
-        QString textHex = getColor(SETTINGS.value("Grid/labelcolor","White").toString()).name();
+        QString textHex = getColor(settings.value("Grid/labelcolor","White").toString()).name();
         int fontSize = getGridSize("font");
 
         gridTextLabel->setStyleSheet("QLabel { font-weight: bold; color: " + textHex + "; font-size: "
@@ -162,10 +162,10 @@ void GridView::addToGridView(Rom *currentRom, int count, bool ddEnabled)
     gameGridItem->setMinimumHeight(gameGridItem->sizeHint().height());
 
     int columnCount;
-    if (SETTINGS.value("Grid/autocolumns","true").toString() == "true")
+    if (settings.value("Grid/autocolumns","true").toString() == "true")
         columnCount = viewport()->width() / (getGridSize("width") + 10);
     else
-        columnCount = SETTINGS.value("Grid/columncount", "4").toInt();
+        columnCount = settings.value("Grid/columncount", "4").toInt();
 
     if (columnCount == 0) columnCount = 1;
 
@@ -256,7 +256,7 @@ void GridView::resetView()
 void GridView::resizeEvent(QResizeEvent *event)
 {
     int check = event->size().width() / (getGridSize("width") + 10);
-    bool autoAdjustColumns = SETTINGS.value("Grid/autocolumns","true").toString() == "true";
+    bool autoAdjustColumns = settings.value("Grid/autocolumns","true").toString() == "true";
 
     if (autoAdjustColumns && check != autoColumnCount && check != 0) {
         autoColumnCount = check;
@@ -282,10 +282,10 @@ void GridView::saveGridPosition()
 void GridView::selectNextRom(QWidget* current, QString keypress)
 {
     int columnCount;
-    if (SETTINGS.value("Grid/autocolumns","true").toString() == "true")
+    if (settings.value("Grid/autocolumns","true").toString() == "true")
         columnCount = autoColumnCount;
     else
-        columnCount = SETTINGS.value("Grid/columncount", "4").toInt();
+        columnCount = settings.value("Grid/columncount", "4").toInt();
 
     int offset = 0;
     if (keypress == "UP")
@@ -310,7 +310,7 @@ void GridView::selectNextRom(QWidget* current, QString keypress)
 
 void GridView::setGridBackground()
 {
-    QString theme = SETTINGS.value("Grid/theme", "Normal").toString();
+    QString theme = settings.value("Grid/theme", "Normal").toString();
     if (theme == "Light")
         setStyleSheet("#gridView { border: none; background: #FFF; } #gridWidget { background: transparent; }");
     else if (theme == "Dark")
@@ -318,7 +318,7 @@ void GridView::setGridBackground()
     else
         setStyleSheet("#gridView { border: none; }");
 
-    QString background = SETTINGS.value("Grid/background", "").toString();
+    QString background = settings.value("Grid/background", "").toString();
     if (background != "") {
         QFile backgroundFile(background);
 
@@ -347,7 +347,7 @@ void GridView::setGridPosition()
             highlightGridWidget(checkWidget);
     }
 
-    if (SETTINGS.value("Grid/autocolumns","true").toString() == "true")
+    if (settings.value("Grid/autocolumns","true").toString() == "true")
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     else
         setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);

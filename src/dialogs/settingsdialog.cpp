@@ -48,12 +48,12 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
 
     //Populate Paths tab
-    ui->emulatorPath->setText(SETTINGS.value("Paths/mupen64plus", "").toString());
-    ui->pluginPath->setText(SETTINGS.value("Paths/plugins", "").toString());
-    ui->dataPath->setText(SETTINGS.value("Paths/data", "").toString());
-    ui->configPath->setText(SETTINGS.value("Paths/config", "").toString());
+    ui->emulatorPath->setText(settings.value("Paths/mupen64plus", "").toString());
+    ui->pluginPath->setText(settings.value("Paths/plugins", "").toString());
+    ui->dataPath->setText(settings.value("Paths/data", "").toString());
+    ui->configPath->setText(settings.value("Paths/config", "").toString());
 
-    QStringList romDirectories = SETTINGS.value("Paths/roms", "").toString().split("|");
+    QStringList romDirectories = settings.value("Paths/roms", "").toString().split("|");
     romDirectories.removeAll("");
     foreach (QString directory, romDirectories)
         ui->romList->addItem(directory);
@@ -67,7 +67,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
 
     //Populate Emulation tab
-    QString emuMode = SETTINGS.value("Emulation/mode", "").toString();
+    QString emuMode = settings.value("Emulation/mode", "").toString();
     if (emuMode == "0")
         ui->pureButton->setChecked(true);
     else if (emuMode == "1")
@@ -77,9 +77,9 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
 
     //Populate Graphics tab
-    if (SETTINGS.value("Graphics/osd", "true").toString() == "true")
+    if (settings.value("Graphics/osd", "true").toString() == "true")
         ui->osdOption->setChecked(true);
-    if (SETTINGS.value("Graphics/fullscreen", "").toString() == "true")
+    if (settings.value("Graphics/fullscreen", "").toString() == "true")
         ui->fullscreenOption->setChecked(true);
 
     QStringList useableModes, modes;
@@ -122,13 +122,13 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     }
 
     ui->resolutionBox->insertItems(0, useableModes);
-    int resIndex = useableModes.indexOf(SETTINGS.value("Graphics/resolution","").toString());
+    int resIndex = useableModes.indexOf(settings.value("Graphics/resolution","").toString());
     if (resIndex >= 0) ui->resolutionBox->setCurrentIndex(resIndex);
 
 
     //Populate Plugins tab
     QStringList audioPlugins, inputPlugins, rspPlugins, videoPlugins;
-    pluginsDir = QDir(SETTINGS.value("Paths/plugins", "").toString());
+    pluginsDir = QDir(settings.value("Paths/plugins", "").toString());
 
     if (pluginsDir.exists()) {
         QStringList files = pluginsDir.entryList(QStringList() << "*", QDir::Files);
@@ -160,10 +160,10 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     if (videoPlugins.contains("mupen64plus-video-rice"))
         videoDefault = "mupen64plus-video-rice";
 
-    int videoIndex = videoPlugins.indexOf(SETTINGS.value("Plugins/video",videoDefault).toString());
-    int audioIndex = audioPlugins.indexOf(SETTINGS.value("Plugins/audio","").toString());
-    int inputIndex = inputPlugins.indexOf(SETTINGS.value("Plugins/input","").toString());
-    int rspIndex = rspPlugins.indexOf(SETTINGS.value("Plugins/rsp","").toString());
+    int videoIndex = videoPlugins.indexOf(settings.value("Plugins/video",videoDefault).toString());
+    int audioIndex = audioPlugins.indexOf(settings.value("Plugins/audio","").toString());
+    int inputIndex = inputPlugins.indexOf(settings.value("Plugins/input","").toString());
+    int rspIndex = rspPlugins.indexOf(settings.value("Plugins/rsp","").toString());
 
     if (videoIndex >= 0) ui->videoBox->setCurrentIndex(videoIndex);
     if (audioIndex >= 0) ui->audioBox->setCurrentIndex(audioIndex);
@@ -173,7 +173,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
     //Populate Table tab
     int tableSizeIndex = 0;
-    QString currentTableSize = SETTINGS.value("Table/imagesize","Medium").toString();
+    QString currentTableSize = settings.value("Table/imagesize","Medium").toString();
 
     QList<QStringList> sizes;
     sizes << (QStringList() << tr("Extra Small") << "Extra Small")
@@ -184,12 +184,12 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
           << (QStringList() << tr("Super")       << "Super");
 
 
-    if (SETTINGS.value("Other/downloadinfo", "").toString() == "true")
+    if (settings.value("Other/downloadinfo", "").toString() == "true")
         populateTableAndListTab(true);
     else
         populateTableAndListTab(false);
 
-    if (SETTINGS.value("Table/stretchfirstcolumn", "true").toString() == "true")
+    if (settings.value("Table/stretchfirstcolumn", "true").toString() == "true")
         ui->tableStretchOption->setChecked(true);
 
     for (int i = 0; i < sizes.length(); i++)
@@ -208,11 +208,11 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
     //Populate Grid tab
     int gridSizeIndex = 0, activeIndex = 0, inactiveIndex = 0, labelColorIndex = 0, bgThemeIndex = 0;
-    QString currentGridSize = SETTINGS.value("Grid/imagesize","Medium").toString();
-    QString currentActiveColor = SETTINGS.value("Grid/activecolor","Cyan").toString();
-    QString currentInactiveColor = SETTINGS.value("Grid/inactivecolor","Black").toString();
-    QString currentLabelColor = SETTINGS.value("Grid/labelcolor","White").toString();
-    QString currentBGTheme = SETTINGS.value("Grid/theme","Normal").toString();
+    QString currentGridSize = settings.value("Grid/imagesize","Medium").toString();
+    QString currentActiveColor = settings.value("Grid/activecolor","Cyan").toString();
+    QString currentInactiveColor = settings.value("Grid/inactivecolor","Black").toString();
+    QString currentLabelColor = settings.value("Grid/labelcolor","White").toString();
+    QString currentBGTheme = settings.value("Grid/theme","Normal").toString();
 
     QList<QStringList> colors;
     colors << (QStringList() << tr("Black")      << "Black")
@@ -242,10 +242,10 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     }
     if (gridSizeIndex >= 0) ui->gridSizeBox->setCurrentIndex(gridSizeIndex);
 
-    int gridColumnCount = SETTINGS.value("Grid/columncount","4").toInt();
+    int gridColumnCount = settings.value("Grid/columncount","4").toInt();
     ui->columnCountBox->setValue(gridColumnCount);
 
-    if (SETTINGS.value("Grid/autocolumns", "true").toString() == "true") {
+    if (settings.value("Grid/autocolumns", "true").toString() == "true") {
         toggleGridColumn(true);
         ui->autoColumnOption->setChecked(true);
     } else
@@ -275,7 +275,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
                 << ui->labelColorLabel
                 << ui->labelColorBox;
 
-    if (SETTINGS.value("Grid/label", "true").toString() == "true") {
+    if (settings.value("Grid/label", "true").toString() == "true") {
         toggleLabel(true);
         ui->labelOption->setChecked(true);
     } else
@@ -289,11 +289,11 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     }
     if (bgThemeIndex >= 0) ui->bgThemeBox->setCurrentIndex(bgThemeIndex);
 
-    QString imagePath = SETTINGS.value("Grid/background", "").toString();
+    QString imagePath = settings.value("Grid/background", "").toString();
     ui->backgroundPath->setText(imagePath);
     hideBGTheme(imagePath);
 
-    if (SETTINGS.value("Grid/sortdirection", "ascending").toString() == "descending")
+    if (settings.value("Grid/sortdirection", "ascending").toString() == "descending")
         ui->gridDescendingOption->setChecked(true);
 
     connect(ui->autoColumnOption, SIGNAL(toggled(bool)), this, SLOT(toggleGridColumn(bool)));
@@ -304,9 +304,9 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
     //Populate List tab
     int listSizeIndex = 0, listTextIndex = 0, listThemeIndex = 0;
-    QString currentListSize = SETTINGS.value("List/imagesize","Medium").toString();
-    QString currentListText = SETTINGS.value("List/textsize","Medium").toString();
-    QString currentListTheme = SETTINGS.value("List/theme","Light").toString();
+    QString currentListSize = settings.value("List/imagesize","Medium").toString();
+    QString currentListText = settings.value("List/textsize","Medium").toString();
+    QString currentListTheme = settings.value("List/theme","Light").toString();
 
     QList<QStringList> themes;
     themes << (QStringList() << tr("Light") << "Light")
@@ -315,13 +315,13 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     listCoverEnable << ui->listSizeLabel
                     << ui->listSizeBox;
 
-    if (SETTINGS.value("List/displaycover", "").toString() == "true") {
+    if (settings.value("List/displaycover", "").toString() == "true") {
         toggleListCover(true);
         ui->listCoverOption->setChecked(true);
     } else
         toggleListCover(false);
 
-    if (SETTINGS.value("List/firstitemheader", "true").toString() == "true")
+    if (settings.value("List/firstitemheader", "true").toString() == "true")
         ui->listHeaderOption->setChecked(true);
 
     for (int i = 0; i < sizes.length(); i++)
@@ -344,7 +344,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
     }
     if (listThemeIndex >= 0) ui->listThemeBox->setCurrentIndex(listThemeIndex);
 
-    if (SETTINGS.value("List/sortdirection", "ascending").toString() == "descending")
+    if (settings.value("List/sortdirection", "ascending").toString() == "descending")
         ui->listDescendingOption->setChecked(true);
 
 
@@ -357,7 +357,7 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
 
     //Populate Other tab
     int languageIndex = 0;
-    QString currentLanguage = SETTINGS.value("language", getDefaultLanguage()).toString();
+    QString currentLanguage = settings.value("language", getDefaultLanguage()).toString();
 
     QList<QStringList> languages;
     languages << (QStringList() << QString::fromUtf8("English")  << "EN")
@@ -370,16 +370,16 @@ SettingsDialog::SettingsDialog(QWidget *parent, int activeTab) : QDialog(parent)
                    << ui->listSizeLabel
                    << ui->listSizeBox;
 
-    if (SETTINGS.value("Other/downloadinfo", "").toString() == "true") {
+    if (settings.value("Other/downloadinfo", "").toString() == "true") {
         toggleDownload(true);
         ui->downloadOption->setChecked(true);
     } else
         toggleDownload(false);
 
-    if (SETTINGS.value("saveoptions", "").toString() == "true")
+    if (settings.value("saveoptions", "").toString() == "true")
         ui->saveOption->setChecked(true);
 
-    ui->parametersLine->setText(SETTINGS.value("Other/parameters", "").toString());
+    ui->parametersLine->setText(settings.value("Other/parameters", "").toString());
 
     for (int i = 0; i < languages.length(); i++)
     {
@@ -490,58 +490,58 @@ void SettingsDialog::editSettings()
 {
     //Set download option first
     if (ui->downloadOption->isChecked()) {
-        SETTINGS.setValue("Other/downloadinfo", true);
+        settings.setValue("Other/downloadinfo", true);
         populateAvailable(true); //This removes thegamesdb.net options if user unselects download
     } else {
-        SETTINGS.setValue("Other/downloadinfo", "");
+        settings.setValue("Other/downloadinfo", "");
         populateAvailable(false);
     }
 
 
     //Paths tab
-    SETTINGS.setValue("Paths/mupen64plus", ui->emulatorPath->text());
-    SETTINGS.setValue("Paths/plugins", ui->pluginPath->text());
-    SETTINGS.setValue("Paths/data", ui->dataPath->text());
-    SETTINGS.setValue("Paths/config", ui->configPath->text());
+    settings.setValue("Paths/mupen64plus", ui->emulatorPath->text());
+    settings.setValue("Paths/plugins", ui->pluginPath->text());
+    settings.setValue("Paths/data", ui->dataPath->text());
+    settings.setValue("Paths/config", ui->configPath->text());
 
     QStringList romDirectories;
     foreach (QListWidgetItem *item, ui->romList->findItems("*", Qt::MatchWildcard))
         romDirectories << item->text();
 
-    SETTINGS.setValue("Paths/roms", romDirectories.join("|"));
+    settings.setValue("Paths/roms", romDirectories.join("|"));
 
 
     //Emulation tab
     if (ui->pureButton->isChecked())
-        SETTINGS.setValue("Emulation/mode", "0");
+        settings.setValue("Emulation/mode", "0");
     else if (ui->cachedButton->isChecked())
-        SETTINGS.setValue("Emulation/mode", "1");
+        settings.setValue("Emulation/mode", "1");
     else
-        SETTINGS.setValue("Emulation/mode", "2");
+        settings.setValue("Emulation/mode", "2");
 
 
     //Graphics tab
     if (ui->osdOption->isChecked())
-        SETTINGS.setValue("Graphics/osd", true);
+        settings.setValue("Graphics/osd", true);
     else
-        SETTINGS.setValue("Graphics/osd", "");
+        settings.setValue("Graphics/osd", "");
 
     if (ui->fullscreenOption->isChecked())
-        SETTINGS.setValue("Graphics/fullscreen", true);
+        settings.setValue("Graphics/fullscreen", true);
     else
-        SETTINGS.setValue("Graphics/fullscreen", "");
+        settings.setValue("Graphics/fullscreen", "");
 
     if (ui->resolutionBox->currentText() != "default")
-        SETTINGS.setValue("Graphics/resolution", ui->resolutionBox->currentText());
+        settings.setValue("Graphics/resolution", ui->resolutionBox->currentText());
     else
-        SETTINGS.setValue("Graphics/resolution", "");
+        settings.setValue("Graphics/resolution", "");
 
 
     //Plugins tab
-    SETTINGS.setValue("Plugins/video", ui->videoBox->currentText());
-    SETTINGS.setValue("Plugins/audio", ui->audioBox->currentText());
-    SETTINGS.setValue("Plugins/input", ui->inputBox->currentText());
-    SETTINGS.setValue("Plugins/rsp", ui->rspBox->currentText());
+    settings.setValue("Plugins/video", ui->videoBox->currentText());
+    settings.setValue("Plugins/audio", ui->audioBox->currentText());
+    settings.setValue("Plugins/input", ui->inputBox->currentText());
+    settings.setValue("Plugins/rsp", ui->rspBox->currentText());
 
 
     //Table tab
@@ -550,43 +550,43 @@ void SettingsDialog::editSettings()
         if (available.contains(item->data(Qt::UserRole).toString()))
             tableVisibleItems << item->data(Qt::UserRole).toString();
 
-    SETTINGS.setValue("Table/columns", tableVisibleItems.join("|"));
+    settings.setValue("Table/columns", tableVisibleItems.join("|"));
 
     if (ui->tableStretchOption->isChecked())
-        SETTINGS.setValue("Table/stretchfirstcolumn", true);
+        settings.setValue("Table/stretchfirstcolumn", true);
     else
-        SETTINGS.setValue("Table/stretchfirstcolumn", "");
+        settings.setValue("Table/stretchfirstcolumn", "");
 
-    SETTINGS.setValue("Table/imagesize", ui->tableSizeBox->itemData(ui->tableSizeBox->currentIndex()));
+    settings.setValue("Table/imagesize", ui->tableSizeBox->itemData(ui->tableSizeBox->currentIndex()));
 
 
     //Grid tab
-    SETTINGS.setValue("Grid/imagesize", ui->gridSizeBox->itemData(ui->gridSizeBox->currentIndex()));
-    SETTINGS.setValue("Grid/columncount", ui->columnCountBox->value());
+    settings.setValue("Grid/imagesize", ui->gridSizeBox->itemData(ui->gridSizeBox->currentIndex()));
+    settings.setValue("Grid/columncount", ui->columnCountBox->value());
 
     if (ui->autoColumnOption->isChecked())
-        SETTINGS.setValue("Grid/autocolumns", true);
+        settings.setValue("Grid/autocolumns", true);
     else
-        SETTINGS.setValue("Grid/autocolumns", "");
+        settings.setValue("Grid/autocolumns", "");
 
-    SETTINGS.setValue("Grid/inactivecolor", ui->shadowInactiveBox->itemData(ui->shadowInactiveBox->currentIndex()));
-    SETTINGS.setValue("Grid/activecolor", ui->shadowActiveBox->itemData(ui->shadowActiveBox->currentIndex()));
-    SETTINGS.setValue("Grid/theme", ui->bgThemeBox->itemData(ui->bgThemeBox->currentIndex()));
-    SETTINGS.setValue("Grid/background", ui->backgroundPath->text());
+    settings.setValue("Grid/inactivecolor", ui->shadowInactiveBox->itemData(ui->shadowInactiveBox->currentIndex()));
+    settings.setValue("Grid/activecolor", ui->shadowActiveBox->itemData(ui->shadowActiveBox->currentIndex()));
+    settings.setValue("Grid/theme", ui->bgThemeBox->itemData(ui->bgThemeBox->currentIndex()));
+    settings.setValue("Grid/background", ui->backgroundPath->text());
 
     if (ui->labelOption->isChecked())
-        SETTINGS.setValue("Grid/label", true);
+        settings.setValue("Grid/label", true);
     else
-        SETTINGS.setValue("Grid/label", "");
+        settings.setValue("Grid/label", "");
 
-    SETTINGS.setValue("Grid/labeltext", ui->labelTextBox->itemData(ui->labelTextBox->currentIndex()));
-    SETTINGS.setValue("Grid/labelcolor", ui->labelColorBox->itemData(ui->labelColorBox->currentIndex()));
-    SETTINGS.setValue("Grid/sort", ui->gridSortBox->itemData(ui->gridSortBox->currentIndex()));
+    settings.setValue("Grid/labeltext", ui->labelTextBox->itemData(ui->labelTextBox->currentIndex()));
+    settings.setValue("Grid/labelcolor", ui->labelColorBox->itemData(ui->labelColorBox->currentIndex()));
+    settings.setValue("Grid/sort", ui->gridSortBox->itemData(ui->gridSortBox->currentIndex()));
 
     if (ui->gridDescendingOption->isChecked())
-        SETTINGS.setValue("Grid/sortdirection", "descending");
+        settings.setValue("Grid/sortdirection", "descending");
     else
-        SETTINGS.setValue("Grid/sortdirection", "ascending");
+        settings.setValue("Grid/sortdirection", "ascending");
 
 
     //List tab
@@ -595,37 +595,37 @@ void SettingsDialog::editSettings()
         if (available.contains(item->data(Qt::UserRole).toString()))
             listVisibleItems << item->data(Qt::UserRole).toString();
 
-    SETTINGS.setValue("List/columns", listVisibleItems.join("|"));
+    settings.setValue("List/columns", listVisibleItems.join("|"));
 
     if (ui->listHeaderOption->isChecked())
-        SETTINGS.setValue("List/firstitemheader", true);
+        settings.setValue("List/firstitemheader", true);
     else
-        SETTINGS.setValue("List/firstitemheader", "");
+        settings.setValue("List/firstitemheader", "");
 
     if (ui->listCoverOption->isChecked() && ui->downloadOption->isChecked())
-        SETTINGS.setValue("List/displaycover", true);
+        settings.setValue("List/displaycover", true);
     else
-        SETTINGS.setValue("List/displaycover", "");
+        settings.setValue("List/displaycover", "");
 
-    SETTINGS.setValue("List/imagesize", ui->listSizeBox->itemData(ui->listSizeBox->currentIndex()));
-    SETTINGS.setValue("List/textsize", ui->listTextBox->itemData(ui->listTextBox->currentIndex()));
-    SETTINGS.setValue("List/theme", ui->listThemeBox->itemData(ui->listThemeBox->currentIndex()));
-    SETTINGS.setValue("List/sort", ui->listSortBox->itemData(ui->listSortBox->currentIndex()));
+    settings.setValue("List/imagesize", ui->listSizeBox->itemData(ui->listSizeBox->currentIndex()));
+    settings.setValue("List/textsize", ui->listTextBox->itemData(ui->listTextBox->currentIndex()));
+    settings.setValue("List/theme", ui->listThemeBox->itemData(ui->listThemeBox->currentIndex()));
+    settings.setValue("List/sort", ui->listSortBox->itemData(ui->listSortBox->currentIndex()));
 
     if (ui->listDescendingOption->isChecked())
-        SETTINGS.setValue("List/sortdirection", "descending");
+        settings.setValue("List/sortdirection", "descending");
     else
-        SETTINGS.setValue("List/sortdirection", "ascending");
+        settings.setValue("List/sortdirection", "ascending");
 
 
     //Other tab
     if (ui->saveOption->isChecked())
-        SETTINGS.setValue("saveoptions", true);
+        settings.setValue("saveoptions", true);
     else
-        SETTINGS.setValue("saveoptions", "");
+        settings.setValue("saveoptions", "");
 
-    SETTINGS.setValue("Other/parameters", ui->parametersLine->text());
-    SETTINGS.setValue("language", ui->languageBox->itemData(ui->languageBox->currentIndex()));
+    settings.setValue("Other/parameters", ui->parametersLine->text());
+    settings.setValue("language", ui->languageBox->itemData(ui->languageBox->currentIndex()));
 
     close();
 }
@@ -728,7 +728,7 @@ void SettingsDialog::populateTableAndListTab(bool downloadItems)
     populateAvailable(downloadItems);
 
     QStringList tableCurrent, tableAvailable;
-    tableCurrent = SETTINGS.value("Table/columns", "Filename|Size").toString().split("|");
+    tableCurrent = settings.value("Table/columns", "Filename|Size").toString().split("|");
     tableAvailable = available;
 
     foreach (QString cur, tableCurrent)
@@ -763,8 +763,8 @@ void SettingsDialog::populateTableAndListTab(bool downloadItems)
 
     //Grid sort field and label text
     int labelTextIndex = 0, gridSortIndex = 0;
-    QString currentLabelText = SETTINGS.value("Grid/labeltext","Filename").toString();
-    QString currentGridSort = SETTINGS.value("Grid/sort","Filename").toString();
+    QString currentLabelText = settings.value("Grid/labeltext","Filename").toString();
+    QString currentGridSort = settings.value("Grid/sort","Filename").toString();
 
     ui->labelTextBox->clear();
     for (int i = 0; i < labelOptions.length(); i++)
@@ -787,7 +787,7 @@ void SettingsDialog::populateTableAndListTab(bool downloadItems)
 
     //List items and sort field
     QStringList listCurrent, listAvailable;
-    listCurrent = SETTINGS.value("List/columns", "Filename|Internal Name|Size").toString().split("|");
+    listCurrent = settings.value("List/columns", "Filename|Internal Name|Size").toString().split("|");
     listAvailable = available;
     listAvailable.removeOne("Game Cover"); //Game Cover handled separately
 
@@ -821,7 +821,7 @@ void SettingsDialog::populateTableAndListTab(bool downloadItems)
     }
 
     int listSortIndex = 0;
-    QString currentListSort = SETTINGS.value("List/sort","Filename").toString();
+    QString currentListSort = settings.value("List/sort","Filename").toString();
 
     ui->listSortBox->clear();
     for (int i = 0; i < sortOptions.length(); i++)

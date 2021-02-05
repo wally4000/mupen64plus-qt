@@ -49,7 +49,7 @@ GameSettingsDialog::GameSettingsDialog(QString fileName, QWidget *parent)
 
 
     QStringList audioPlugins, inputPlugins, rspPlugins, videoPlugins;
-    pluginsDir = QDir(SETTINGS.value("Paths/plugins", "").toString());
+    pluginsDir = QDir(settings.value("Paths/plugins", "").toString());
 
     if (pluginsDir.exists()) {
         QStringList files = pluginsDir.entryList(QStringList() << "*", QDir::Files);
@@ -76,18 +76,18 @@ GameSettingsDialog::GameSettingsDialog(QString fileName, QWidget *parent)
     ui->inputBox->insertItems(1, inputPlugins);
     ui->rspBox->insertItems(1, rspPlugins);
 
-    int videoIndex = videoPlugins.indexOf(SETTINGS.value(fileName+"/video","").toString());
-    int audioIndex = audioPlugins.indexOf(SETTINGS.value(fileName+"/audio","").toString());
-    int inputIndex = inputPlugins.indexOf(SETTINGS.value(fileName+"/input","").toString());
-    int rspIndex = rspPlugins.indexOf(SETTINGS.value(fileName+"/rsp","").toString());
+    int videoIndex = videoPlugins.indexOf(settings.value(fileName+"/video","").toString());
+    int audioIndex = audioPlugins.indexOf(settings.value(fileName+"/audio","").toString());
+    int inputIndex = inputPlugins.indexOf(settings.value(fileName+"/input","").toString());
+    int rspIndex = rspPlugins.indexOf(settings.value(fileName+"/rsp","").toString());
 
     if (videoIndex >= 0) ui->videoBox->setCurrentIndex(videoIndex + 1);
     if (audioIndex >= 0) ui->audioBox->setCurrentIndex(audioIndex + 1);
     if (inputIndex >= 0) ui->inputBox->setCurrentIndex(inputIndex + 1);
     if (rspIndex >= 0) ui->rspBox->setCurrentIndex(rspIndex + 1);
 
-    ui->configPath->setText(SETTINGS.value(fileName+"/config", "").toString());
-    ui->parameters->setText(SETTINGS.value(fileName+"/parameters", "").toString());
+    ui->configPath->setText(settings.value(fileName+"/config", "").toString());
+    ui->parameters->setText(settings.value(fileName+"/parameters", "").toString());
 
     ui->buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
     ui->buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
@@ -116,35 +116,35 @@ void GameSettingsDialog::browseConfig()
 void GameSettingsDialog::editGameSettings()
 {
     if (ui->videoBox->currentIndex() > 0)
-        SETTINGS.setValue(fileName+"/video", ui->videoBox->currentText());
+        settings.setValue(fileName+"/video", ui->videoBox->currentText());
     else
-        SETTINGS.setValue(fileName+"/video", "");
+        settings.setValue(fileName+"/video", "");
 
     if (ui->audioBox->currentIndex() > 0)
-        SETTINGS.setValue(fileName+"/audio", ui->audioBox->currentText());
+        settings.setValue(fileName+"/audio", ui->audioBox->currentText());
     else
-        SETTINGS.setValue(fileName+"/audio", "");
+        settings.setValue(fileName+"/audio", "");
 
     if (ui->inputBox->currentIndex() > 0)
-        SETTINGS.setValue(fileName+"/input", ui->inputBox->currentText());
+        settings.setValue(fileName+"/input", ui->inputBox->currentText());
     else
-        SETTINGS.setValue(fileName+"/input", "");
+        settings.setValue(fileName+"/input", "");
 
     if (ui->rspBox->currentIndex() > 0)
-        SETTINGS.setValue(fileName+"/rsp", ui->rspBox->currentText());
+        settings.setValue(fileName+"/rsp", ui->rspBox->currentText());
     else
-        SETTINGS.setValue(fileName+"/rsp", "");
+        settings.setValue(fileName+"/rsp", "");
 
-    SETTINGS.setValue(fileName+"/config", ui->configPath->text());
-    SETTINGS.setValue(fileName+"/parameters", ui->parameters->text());
+    settings.setValue(fileName+"/config", ui->configPath->text());
+    settings.setValue(fileName+"/parameters", ui->parameters->text());
 
 
     // Clean up game settings if they are empty
     bool emptyCheck = true;
-    foreach (QString key, SETTINGS.allKeys())
-        if (key.startsWith(fileName) && SETTINGS.value(key, "") != "")
+    foreach (QString key, settings.allKeys())
+        if (key.startsWith(fileName) && settings.value(key, "") != "")
             emptyCheck = false;
 
     if (emptyCheck)
-        SETTINGS.remove(fileName);
+        settings.remove(fileName);
 }

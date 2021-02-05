@@ -155,10 +155,10 @@ int getDefaultWidth(QString id, int imageWidth)
 
 int getGridSize(QString which)
 {
-    QString size = SETTINGS.value("Grid/imagesize","Medium").toString();
+    QString size = settings.value("Grid/imagesize","Medium").toString();
 
     if (which == "height") {
-        if (SETTINGS.value("Grid/label", "true").toString() == "true") {
+        if (settings.value("Grid/label", "true").toString() == "true") {
             if (size == "Extra Small") return 65;
             if (size == "Small")       return 90;
             if (size == "Medium")      return 145;
@@ -194,7 +194,7 @@ int getGridSize(QString which)
 
 QSize getImageSize(QString view)
 {
-    QString size = SETTINGS.value(view+"/imagesize","Medium").toString();
+    QString size = settings.value(view+"/imagesize","Medium").toString();
 
     if (view == "Table") {
         if (size == "Extra Small") return QSize(33, 24);
@@ -281,11 +281,11 @@ QGraphicsDropShadowEffect *getShadow(bool active)
 
     if (active) {
         shadow->setBlurRadius(25.0);
-        shadow->setColor(getColor(SETTINGS.value("Grid/activecolor","Cyan").toString(), 255));
+        shadow->setColor(getColor(settings.value("Grid/activecolor","Cyan").toString(), 255));
         shadow->setOffset(0);
     } else {
         shadow->setBlurRadius(10.0);
-        shadow->setColor(getColor(SETTINGS.value("Grid/inactivecolor","Black").toString(), 200));
+        shadow->setColor(getColor(settings.value("Grid/inactivecolor","Black").toString(), 200));
         shadow->setOffset(0);
     }
 
@@ -312,7 +312,7 @@ int getTableDataIndexFromName(QString infoName)
 
 int getTextSize()
 {
-    QString size = SETTINGS.value("List/textsize","Medium").toString();
+    QString size = settings.value("List/textsize","Medium").toString();
 
     if (size == "Extra Small") return 7;
     if (size == "Small")       return 9;
@@ -393,13 +393,13 @@ bool romSorter(const Rom &firstRom, const Rom &lastRom)
 {
     QString sort, direction;
 
-    QString layout = SETTINGS.value("View/layout", "None").toString();
+    QString layout = settings.value("View/layout", "None").toString();
     if (layout == "grid") {
-        sort = SETTINGS.value("Grid/sort", "Filename").toString();
-        direction = SETTINGS.value("Grid/sortdirection", "ascending").toString();
+        sort = settings.value("Grid/sort", "Filename").toString();
+        direction = settings.value("Grid/sortdirection", "ascending").toString();
     } else if (layout == "list") {
-        sort = SETTINGS.value("List/sort", "Filename").toString();
-        direction = SETTINGS.value("List/sortdirection", "ascending").toString();
+        sort = settings.value("List/sort", "Filename").toString();
+        direction = settings.value("List/sortdirection", "ascending").toString();
     } else //just return sort by filename
         return firstRom.fileName < lastRom.fileName;
 

@@ -70,7 +70,7 @@ TableView::TableView(QWidget *parent) : QTreeWidget(parent)
 
 void TableView::addNoCartRow()
 {
-    QStringList visible = SETTINGS.value("Table/columns", "Filename|Size").toString().split("|");
+    QStringList visible = settings.value("Table/columns", "Filename|Size").toString().split("|");
 
     fileItem = new TreeWidgetItem(this);
 
@@ -87,7 +87,7 @@ void TableView::addNoCartRow()
 
 void TableView::addToTableView(Rom *currentRom)
 {
-    QStringList visible = SETTINGS.value("Table/columns", "Filename|Size").toString().split("|");
+    QStringList visible = settings.value("Table/columns", "Filename|Size").toString().split("|");
 
     if (visible.join("") == "") //Otherwise no columns, so don't bother populating
         return;
@@ -216,7 +216,7 @@ void TableView::keyPressEvent(QKeyEvent *event)
 
 void TableView::resetView(bool imageUpdated)
 {
-    QStringList tableVisible = SETTINGS.value("Table/columns", "Filename|Size").toString().split("|");
+    QStringList tableVisible = settings.value("Table/columns", "Filename|Size").toString().split("|");
 
     QStringList translations;
     foreach (QString header, tableVisible) translations << getTranslation(header);
@@ -224,7 +224,7 @@ void TableView::resetView(bool imageUpdated)
     int hidden = 5;
 
     saveColumnWidths();
-    QStringList widths = SETTINGS.value("Table/width", "").toString().split("|");
+    QStringList widths = settings.value("Table/width", "").toString().split("|");
 
     headerLabels.clear();
     headerLabels << "" << "" << "" << "" << "" << translations; //First 5 blank for hidden columns
@@ -248,7 +248,7 @@ void TableView::resetView(bool imageUpdated)
     } else
         setStyleSheet("QTreeView { border: none; } QTreeView::item { height: 25px; }");
 
-    QStringList sort = SETTINGS.value("Table/sort", "").toString().split("|");
+    QStringList sort = settings.value("Table/sort", "").toString().split("|");
     if (sort.size() == 2) {
         if (sort[1] == "descending")
             headerView->setSortIndicator(tableVisible.indexOf(sort[0]) + hidden, Qt::DescendingOrder);
@@ -269,7 +269,7 @@ void TableView::resetView(bool imageUpdated)
             int c = i;
             if (current == "Game Cover") c++; //If first column is game cover, use next column
 
-            if (SETTINGS.value("Table/stretchfirstcolumn", "true") == "true")
+            if (settings.value("Table/stretchfirstcolumn", "true") == "true")
                 header()->setSectionResizeMode(c, QHeaderView::Stretch);
             else
                 header()->setSectionResizeMode(c, QHeaderView::Interactive);
@@ -299,7 +299,7 @@ void TableView::saveColumnWidths()
     }
 
     if (widths.size() > 0)
-        SETTINGS.setValue("Table/width", widths.join("|"));
+        settings.setValue("Table/width", widths.join("|"));
 }
 
 
@@ -308,9 +308,9 @@ void TableView::saveSortOrder(int column, Qt::SortOrder order)
     QString columnName = headerLabels.value(column);
 
     if (order == Qt::DescendingOrder)
-        SETTINGS.setValue("Table/sort", columnName + "|descending");
+        settings.setValue("Table/sort", columnName + "|descending");
     else
-        SETTINGS.setValue("Table/sort", columnName + "|ascending");
+        settings.setValue("Table/sort", columnName + "|ascending");
 }
 
 
