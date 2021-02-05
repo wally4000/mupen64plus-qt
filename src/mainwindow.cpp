@@ -228,7 +228,7 @@ void MainWindow::checkConfigLocation()
         if (QFileInfo(configCheck+"/mupen64plus.cfg").exists())
             SETTINGS.setValue("Paths/config", configCheck);
         else 
-            SETTINGS.setValue("Paths/config", ".")
+            SETTINGS.setValue("Paths/config", ".");
     }
 }
 
