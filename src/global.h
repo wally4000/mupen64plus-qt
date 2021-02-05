@@ -50,7 +50,7 @@ const QString TheGamesDBAPIKey = "5dd59a89da5c0018b0e9ded34e299cf675e94d51e229a1
 #ifdef Q_OS_WIN
     #define SETTINGS    QSettings(AppNameLower+".ini", QSettings::IniFormat)
 #else
-    #define SETTINGS    QSettings(ParentNameLower, AppNameLower)
+    #define SETTINGS    QSettings(ParentNameLower, AppNameLower, QSettings::NativeFormat)
 #endif
 
 #if defined(Q_OS_LINUX) || defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_NETBSD)
